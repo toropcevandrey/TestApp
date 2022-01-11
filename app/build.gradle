@@ -67,6 +67,9 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.38.1'
     kapt 'com.google.dagger:dagger-android-processor:2.38.1'
 
+    //SwipeRefreshLayout
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'

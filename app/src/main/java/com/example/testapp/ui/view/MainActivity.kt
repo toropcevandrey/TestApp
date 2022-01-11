@@ -2,22 +2,28 @@ package com.example.testapp.ui.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.WindowMetrics
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.testapp.App
 import com.example.testapp.R
 import com.example.testapp.ui.viewmodel.MainViewModel
 import javax.inject.Inject
 
-class MainActivity() : AppCompatActivity() {
+class MainActivity () : AppCompatActivity() {
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+    @Inject
+    lateinit var screenUtils: ScreenUtils
     private var viewModel: MainViewModel? = null
     private lateinit var rvMain: RecyclerView
     private lateinit var adapterMain: MainListAdapter
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+    private var screenWidth: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +32,10 @@ class MainActivity() : AppCompatActivity() {
         setupMainViewModel()
         initViews()
         setObservers()
+        swipeRefresh.setOnRefreshListener {
+            viewModel?.firstInit()
+            swipeRefresh.isRefreshing = false
+        }
     }
 
     private fun setupMainViewModel() {
@@ -38,11 +48,15 @@ class MainActivity() : AppCompatActivity() {
     }
 
     private fun initViews() {
+        screenWidth = screenUtils.getScreenWidth(this)
+        swipeRefresh = findViewById(R.id.swipe_refresh)
         rvMain = findViewById(R.id.rv)
         rvMain.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        adapterMain = MainListAdapter()
+        adapterMain = MainListAdapter(screenWidth)
         rvMain.adapter = adapterMain
-        rvMain.layoutManager = LinearLayoutManager(this)
+        rvMain.layoutManager = GridLayoutManager(this, 2)
+
+
     }
 
     private fun setObservers() {
