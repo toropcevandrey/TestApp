@@ -14,10 +14,10 @@
         android:theme="@style/HiddenTitleTheme"
         android:usesCleartextTraffic="true" >
         <activity
-            android:name=".ui.view.FullscreenPhotoActivity"
+            android:name=".features.full_screen.FullscreenPhotoActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.view.MainActivity"
+            android:name=".features.main.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

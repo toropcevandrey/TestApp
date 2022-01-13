@@ -1,6 +1,6 @@
 package com.example.testapp.di.module
 
-import com.example.testapp.data.api.RetrofitBuilder
+import com.example.testapp.api.RetrofitBuilder
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

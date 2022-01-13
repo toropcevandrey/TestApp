@@ -1,19 +1,20 @@
-package com.example.testapp.ui.view
+package com.example.testapp.features.main
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.example.testapp.ui.OnClickListener
 
 class MainListAdapter(
-    private val screenWidth: Int,
-    private val screenHeight: Int,
+    private val photoSize: Int,
     private val onClickListener: OnClickListener
 ) :
     ListAdapter<String, MainViewHolder>(MainComparator()) {
 
+    interface OnClickListener {
+        fun onClick(url: String)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
-        return MainViewHolder.create(parent, screenWidth, screenHeight)
+        return MainViewHolder.create(parent, photoSize)
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {

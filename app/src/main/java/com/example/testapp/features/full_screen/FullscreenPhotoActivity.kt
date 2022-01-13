@@ -1,4 +1,4 @@
-package com.example.testapp.ui.view
+package com.example.testapp.features.full_screen
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

@@ -1,10 +1,9 @@
-package com.example.testapp.ui.viewmodel
+package com.example.testapp.features.main
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.testapp.data.api.ApiService
-import kotlinx.coroutines.delay
+import com.example.testapp.api.ApiService
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject

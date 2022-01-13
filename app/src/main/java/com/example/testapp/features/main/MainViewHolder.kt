@@ -1,4 +1,4 @@
-package com.example.testapp.ui.view
+package com.example.testapp.features.main
 
 import android.view.LayoutInflater
 import android.view.View
@@ -25,17 +25,12 @@ open class MainViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     companion object {
-        fun create(parent: ViewGroup, screenWidth: Int, screenHeight: Int): MainViewHolder {
+        fun create(parent: ViewGroup, photoSize: Int): MainViewHolder {
             val view: View = LayoutInflater.from(parent.context)
                 .inflate(R.layout.view_holder, parent, false)
-            val x: Int = if (screenHeight > screenWidth) {
-                screenWidth / 2
-            } else {
-                screenWidth / 3
-            }
             view.updateLayoutParams {
-                width = x
-                height = x
+                width = photoSize
+                height = photoSize
             }
             return MainViewHolder(view)
         }

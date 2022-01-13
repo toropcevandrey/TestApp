@@ -1,4 +1,4 @@
-package com.example.testapp.ui.view
+package com.example.testapp.features.main
 
 import androidx.recyclerview.widget.DiffUtil
 

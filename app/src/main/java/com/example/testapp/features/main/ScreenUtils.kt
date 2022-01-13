@@ -1,6 +1,7 @@
-package com.example.testapp.ui.view
+package com.example.testapp.features.main
 
 import android.util.DisplayMetrics
+import com.example.testapp.features.main.MainActivity
 
 class ScreenUtils {
 

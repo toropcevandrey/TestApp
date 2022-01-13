@@ -1,4 +1,4 @@
-package com.example.testapp.ui.view
+package com.example.testapp.features.main
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -13,12 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.testapp.App
 import com.example.testapp.R
-import com.example.testapp.ui.OnClickListener
-import com.example.testapp.ui.viewmodel.MainViewModel
-import com.example.testapp.ui.viewmodel.PhotosState
+import com.example.testapp.features.full_screen.FullscreenPhotoActivity
 import javax.inject.Inject
 
-class MainActivity() : AppCompatActivity() {
+class MainActivity() : AppCompatActivity(), MainListAdapter.OnClickListener {
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -33,6 +31,11 @@ class MainActivity() : AppCompatActivity() {
     private lateinit var btnRefresh: Button
     private lateinit var pgLoading: ProgressBar
 
+    companion object {
+        const val LANDSCAPE_COUNT = 3
+        const val PORTRAIT_COUNT = 2
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -42,8 +45,11 @@ class MainActivity() : AppCompatActivity() {
         setObservers()
         swipeRefresh.setOnRefreshListener {
             viewModel?.loadPhotos()
-            swipeRefresh.isRefreshing = false
         }
+    }
+
+    override fun onClick(url: String) {
+        openFullscreenPhoto(url)
     }
 
     private fun setupMainViewModel() {
@@ -59,18 +65,20 @@ class MainActivity() : AppCompatActivity() {
         btnRefresh.setOnClickListener {
             viewModel?.loadPhotos()
         }
-        adapterMain = MainListAdapter(
-            screenUtils.getScreenWidth(this),
-            screenUtils.getScreenHeight(this),
-            OnClickListener { url ->
-                openFullscreenPhoto(url)
-            })
+        val screenWidth = screenUtils.getScreenWidth(this)
+        val screenHeight = screenUtils.getScreenHeight(this)
+        val photoSize: Int = if (screenHeight > screenWidth) {
+            screenWidth / PORTRAIT_COUNT
+        } else {
+            screenWidth / LANDSCAPE_COUNT
+        }
+        adapterMain = MainListAdapter(photoSize, this)
         rvMain.adapter = adapterMain
         rvMain.layoutManager =
-            if (screenUtils.getScreenHeight(this) > screenUtils.getScreenWidth(this)) {
-                GridLayoutManager(this, 2)
+            if (screenHeight > screenWidth) {
+                GridLayoutManager(this, PORTRAIT_COUNT)
             } else {
-                GridLayoutManager(this, 3)
+                GridLayoutManager(this, LANDSCAPE_COUNT)
             }
     }
 
@@ -83,6 +91,7 @@ class MainActivity() : AppCompatActivity() {
             tvError.isVisible = isError
             pgLoading.isVisible = isLoading
             rvMain.isVisible = isSuccess
+            swipeRefresh.isRefreshing = false
 
             if (isSuccess) {
                 adapterMain.submitList((state as PhotosState.Success).photos)
