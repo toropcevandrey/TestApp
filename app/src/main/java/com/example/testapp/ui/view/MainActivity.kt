@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -30,6 +31,7 @@ class MainActivity() : AppCompatActivity() {
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var tvError: TextView
     private lateinit var btnRefresh: Button
+    private lateinit var pgLoading: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +54,7 @@ class MainActivity() : AppCompatActivity() {
         swipeRefresh = findViewById(R.id.swipe_refresh)
         rvMain = findViewById(R.id.rv)
         tvError = findViewById(R.id.tv_error)
+        pgLoading = findViewById(R.id.pg_loading)
         btnRefresh = findViewById(R.id.btn_refresh)
         btnRefresh.setOnClickListener {
             viewModel?.loadPhotos()
@@ -73,22 +76,23 @@ class MainActivity() : AppCompatActivity() {
 
     private fun setObservers() {
         viewModel?.photosListEvent?.observe(this) { state ->
-            if (state is PhotosState.Success) {
-                adapterMain.submitList(state.photos)
-                rvMain.isVisible = true
-                tvError.isVisible = false
-                btnRefresh.isVisible = false
-            } else {
-                rvMain.isVisible = false
-                tvError.isVisible = true
-                btnRefresh.isVisible = true
+            val isError = state is PhotosState.Error
+            val isLoading = state is PhotosState.Loading
+            val isSuccess = state is PhotosState.Success
+            btnRefresh.isVisible = isError
+            tvError.isVisible = isError
+            pgLoading.isVisible = isLoading
+            rvMain.isVisible = isSuccess
+
+            if (isSuccess) {
+                adapterMain.submitList((state as PhotosState.Success).photos)
             }
         }
     }
 
     private fun openFullscreenPhoto(url: String) {
         intent = Intent(this, FullscreenPhotoActivity::class.java)
-        intent.putExtra("image_url", url)
+        intent.putExtra(FullscreenPhotoActivity.IMAGE_URL_KEY, url)
         startActivity(intent)
     }
 }

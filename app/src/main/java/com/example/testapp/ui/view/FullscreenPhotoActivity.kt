@@ -8,13 +8,18 @@ import com.example.testapp.R
 import com.github.chrisbanes.photoview.PhotoView
 
 class FullscreenPhotoActivity : AppCompatActivity() {
+
+    companion object{
+        const val IMAGE_URL_KEY = "image_url"
+    }
+
     private var url: String = ""
     private lateinit var ivFullscreenPhoto: PhotoView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fullscreen_photo)
-        url = intent.getStringExtra("image_url").toString()
+        url = intent.getStringExtra(IMAGE_URL_KEY).toString()
         ivFullscreenPhoto = findViewById(R.id.iv_fullscreen_photo)
 
         Glide.with(this)
