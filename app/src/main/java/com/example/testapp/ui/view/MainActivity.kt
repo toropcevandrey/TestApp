@@ -3,6 +3,9 @@ package com.example.testapp.ui.view
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +14,7 @@ import com.example.testapp.App
 import com.example.testapp.R
 import com.example.testapp.ui.OnClickListener
 import com.example.testapp.ui.viewmodel.MainViewModel
+import com.example.testapp.ui.viewmodel.PhotosState
 import javax.inject.Inject
 
 class MainActivity() : AppCompatActivity() {
@@ -24,6 +28,8 @@ class MainActivity() : AppCompatActivity() {
     private lateinit var rvMain: RecyclerView
     private lateinit var adapterMain: MainListAdapter
     private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var tvError: TextView
+    private lateinit var btnRefresh: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,23 +39,23 @@ class MainActivity() : AppCompatActivity() {
         initViews()
         setObservers()
         swipeRefresh.setOnRefreshListener {
-            viewModel?.firstInit()
+            viewModel?.loadPhotos()
             swipeRefresh.isRefreshing = false
         }
     }
 
     private fun setupMainViewModel() {
         viewModel = ViewModelProvider(this, factory).get(MainViewModel::class.java)
-        firstCreate()
-    }
-
-    private fun firstCreate() {
-        viewModel?.firstInit()
     }
 
     private fun initViews() {
         swipeRefresh = findViewById(R.id.swipe_refresh)
         rvMain = findViewById(R.id.rv)
+        tvError = findViewById(R.id.tv_error)
+        btnRefresh = findViewById(R.id.btn_refresh)
+        btnRefresh.setOnClickListener {
+            viewModel?.loadPhotos()
+        }
         adapterMain = MainListAdapter(
             screenUtils.getScreenWidth(this),
             screenUtils.getScreenHeight(this),
@@ -66,8 +72,17 @@ class MainActivity() : AppCompatActivity() {
     }
 
     private fun setObservers() {
-        viewModel?.imagesData?.observe(this) { images ->
-            adapterMain.submitList(images)
+        viewModel?.photosListEvent?.observe(this) { state ->
+            if (state is PhotosState.Success) {
+                adapterMain.submitList(state.photos)
+                rvMain.isVisible = true
+                tvError.isVisible = false
+                btnRefresh.isVisible = false
+            } else {
+                rvMain.isVisible = false
+                tvError.isVisible = true
+                btnRefresh.isVisible = true
+            }
         }
     }
 

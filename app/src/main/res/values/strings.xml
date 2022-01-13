@@ -3,4 +3,6 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="tv_error">"Ошибка связи"</string>
+    <string name="btn_refresh">"Повторить"</string>
 </resources>

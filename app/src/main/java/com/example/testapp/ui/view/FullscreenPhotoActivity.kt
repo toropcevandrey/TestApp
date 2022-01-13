@@ -2,14 +2,14 @@ package com.example.testapp.ui.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.testapp.R
+import com.github.chrisbanes.photoview.PhotoView
 
 class FullscreenPhotoActivity : AppCompatActivity() {
     private var url: String = ""
-    private lateinit var ivFullscreenPhoto: ImageView
+    private lateinit var ivFullscreenPhoto: PhotoView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

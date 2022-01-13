@@ -5,17 +5,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.testapp.data.api.ApiService
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
     private val apiService: ApiService
 ) : ViewModel() {
 
-    val imagesData: MutableLiveData<List<String>> = MutableLiveData()
+    var photosListEvent: MutableLiveData<PhotosState> =
+        MutableLiveData(PhotosState.Success(listOf()))
 
-    fun firstInit() {
+    init {
+        loadPhotos()
+    }
+
+    fun loadPhotos() {
         viewModelScope.launch {
-            imagesData.value = apiService.getImages()
+            try {
+                photosListEvent.value = PhotosState.Success(apiService.getImages())
+            } catch (e: Exception) {
+                photosListEvent.value = PhotosState.Error
+            }
         }
     }
 }
